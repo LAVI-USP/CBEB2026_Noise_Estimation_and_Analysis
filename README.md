@@ -6,7 +6,7 @@ This repository contains the MATLAB implementation developed for the manuscript:
 
 > **Noise Characterization of Digital Mammography Systems Based on Variance Decomposition and Spatial-Spectral Analysis**
 
-which is currently being prepared for submission to the **XXIX Brazilian Congress on Biomedical Engineering (CBEB 2026)**.
+which is currently being prepared for submission to the **XXX Brazilian Congress on Biomedical Engineering (CBEB 2026)**.
 
 The toolbox implements a complete workflow for detector noise characterization using homogeneous calibration images, following quality control methodologies established in the literature.
 
