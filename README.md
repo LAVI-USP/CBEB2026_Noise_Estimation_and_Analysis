@@ -30,37 +30,6 @@ These analyses can be used for detector characterization, quality control, image
 
 ---
 
-## Repository structure
-
-```text
-.
-├── Functions/
-│   ├── estimate_response_linearity.m
-│   ├── estimate_xi_s_xi_q_xi_e.m
-│   ├── estimate_xi_qi_map.m
-│   ├── estimate_kernel.m
-│   ├── estimate_nnps.m
-│   ├── plot_snr_profiles.m
-│   ├── plot_nnps_profiles.m
-│   ├── loadCalibrationImages.m
-│   ├── EvalSNR.m
-│   └── eval_snr.m
-│
-├── Uniform Images/
-│   ├── Siemens/
-│   └── GE/
-│
-├── Noise Parameters/
-│   ├── Siemens/
-│   └── GE/
-│
-├── main_est.m
-├── Noise_analysis_GE.m
-└── Noise_analysis_Siemens.m
-```
-
----
-
 ## Processing workflow
 
 The complete detector characterization is performed by running
