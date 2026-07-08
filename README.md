@@ -120,13 +120,6 @@ Although the code should also run on recent MATLAB releases, MATLAB R2025b is th
 
 ## Future developments
 
-Planned improvements include:
-
-- Python implementation of the complete toolbox;
-- Support for additional detector technologies;
-- Additional image quality metrics;
-- Extended examples and tutorials.
-
 A Python version of this toolbox will be made publicly available in a future release.
 
 ---
