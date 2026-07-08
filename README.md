@@ -128,7 +128,7 @@ A Python version of this toolbox will be made publicly available in a future rel
 
 **Renann F. Brandão**
 
-Laboratory of Applied Vision (LAVI)
+Laboratory for Advanced Vision and Imaging (LAVI)
 
 University of São Paulo (USP)
 
