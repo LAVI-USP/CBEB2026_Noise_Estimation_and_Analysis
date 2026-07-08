@@ -124,12 +124,14 @@ A Python version of this toolbox will be made publicly available in a future rel
 
 ---
 
-## License
-
-This project is distributed under the MIT License.
-
----
-
 ## Contact
 
-If you have questions, suggestions, or would like to report an issue, please open an Issue in this repository.
+**Renann F. Brandão**
+
+Laboratory of Applied Vision (LAVI)
+
+University of São Paulo (USP)
+
+São Carlos, SP, Brazil
+
+📧 **[renannbrandao@usp.br](mailto:renannbrandao@usp.br)**
