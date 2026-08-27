@@ -22,7 +22,7 @@ plotImages = 1;
 [Z_img, info] = loadCalibrationImages(dataDir, System,mAsVals,kVpVals,rls_selected);
 
 %% STEP 1 : Estimate gain(g) and tau
-[g,tau, mu, current] = estimate_response_linearity(Z_img, info, roiSize_px, roiDistCW_px,plotImages);
+[g,tau, mu, current, mGy] = estimate_response_linearity(Z_img, info, roiSize_px, roiDistCW_px,plotImages);
 
 %% STEP 2 : Estimate xi_s, xi_q and xi_e
 [xi_s,xi_q,xi_e]= estimate_xi_s_xi_q_xi_e(Z_img, tau, roiSize_px, roiDistCW_px,plotImages);
@@ -34,9 +34,9 @@ plotImages = 1;
 [K_N, psd] = estimate_kernel(Z_img,pixelSize_mm,plotImages); 
 
 %% PLOT PA SNR and NNPS
-[snrPA] = plot_snr_profiles(Z_img, mAsVals, pixelSize_mm, System);
+[snrPA] = plot_snr_profiles(Z_img, mGy, pixelSize_mm, System);
 
-[NNPS_radial,freq,NNPS] = estimate_nnps(Z_img, mAsVals, pixelSize_mm,System);
+[NNPS_radial,freq,NNPS] = estimate_nnps(Z_img, mGy, pixelSize_mm,System);
 
 
 if 1
