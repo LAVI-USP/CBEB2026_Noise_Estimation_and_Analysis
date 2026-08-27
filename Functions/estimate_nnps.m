@@ -43,13 +43,13 @@ colorGE      = [0.0000 0.4470 0.7410];
 colorSiemens = [0.8500 0.3250 0.0980];
 
 if strcmpi(systemName,'Siemens')
-    lineColor = colorSiemens;
-    fMin = 3*10^-7;
-    fMax =  10^-4;
+    lineColor = colorSiemens;    
+    fMax =  4*10^-5;
+    fMin =  3*10^-7;
 else
     lineColor = colorGE;
+    fMax = 4*10^-6;
     fMin = 3*10^-8;
-    fMax = 2*10^-6;
 end
 
 %% ------------------------------------------------------------------------
@@ -238,7 +238,7 @@ xlim([1 round(max(freq))])
 
 legend(...
     flipud(h),...
-    flipud(compose('%d mAs',mAsVals(:))),...
+    flipud(compose('%.1f mAs',mAsVals(:))),...
     'Location','northeast',...
     'Box','on');
 axis([1 round(max(freq)) fMin fMax])

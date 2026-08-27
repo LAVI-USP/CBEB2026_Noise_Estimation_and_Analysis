@@ -1,4 +1,4 @@
-function [g,tau, mu, current] = estimate_response_linearity(Z, info, roiSize, roiDistCW,showFigure)
+function [g,tau, mu, current,In_mGy] = estimate_response_linearity(Z, info, roiSize, roiDistCW,showFigure)
 %--------------------------------------------------------------------------
 % estimate_response_linearity
 %
@@ -64,54 +64,88 @@ for k = 1:nImg
     mu(k) = mean(roi(:));
     current(k) = info{k}.ExposureInuAs / 1000; % uAs -> mAs
     % Uncomment if DAK is available
-    % DAK_uGy(k) = info{k}.EntranceDoseInmGy;
+    In_mGy(k) = info{k}.EntranceDoseInmGy;
 end
 
-% Linear regression: \mu versus exposure(mAs)
-p = polyfit(current, mu, 1);
-%p = polyfit(DAK_uGy, E_ROI, 1);
+%% Linear regression
 
-g = p(1);
-tau = p(2);
+% Convert to column vectors
+current = current(:);
+In_mGy = In_mGy(:);
+mu = mu(:);
+
+% Linear model:
+% mu = g * current + tau
+
+%mdl = fitlm(current,mu);
+mdl = fitlm(In_mGy,mu);
+
+%% Detector gain and offset
+
+g   = mdl.Coefficients.Estimate(2);
+tau = mdl.Coefficients.Estimate(1);
+
+%% Goodness of fit
+
+R2 = mdl.Rsquared.Ordinary;
+
+%% 95% confidence intervals
+
+CI_all = coefCI(mdl,0.05);
+
+% Row 1 = intercept (tau)
+% Row 2 = slope (g)
+
+CI.tau = CI_all(1,:);
+CI.g   = CI_all(2,:);
+
+%% Display
+
+fprintf('\n');
+fprintf('=============================================\n');
+fprintf('Detector Response Linearity\n');
+fprintf('=============================================\n');
+
+fprintf('Gain (g)      = %.4f gray-levels/mGy\n',g);
+fprintf('95%% CI        = [%.4f, %.4f]\n',CI.g(1),CI.g(2));
+
+fprintf('Offset (tau)  = %.4f gray-levels\n',tau);
+fprintf('95%% CI        = [%.4f, %.4f]\n',CI.tau(1),CI.tau(2));
+
+fprintf('R^2           = %.5f\n',R2);
+fprintf('\n');
 
 
-%% Plot detector response
+%% Plot
 
 if showFigure
 
-    figure(...
-        'Color','w',...
-        'Units','centimeters',...
-        'Position',[2 2 11 8]);
-    hold on;
-    box on;
-    grid on;
+    figure('Color','w',...
+        'Position',[250 285 477 365]);
 
-    scatter(current,...
-        mu,...
-        70,...
+    hold on
+    box on
+    grid on
+
+    scatter(In_mGy,mu,...
+        55,...
         'filled',...
-        'MarkerFaceColor',[0 0.4470 0.7410],...
         'MarkerEdgeColor','k');
 
-    xFit = linspace(min(current),max(current),200);
+    xfit = linspace(min(In_mGy),max(In_mGy),200);
+    yfit = predict(mdl,xfit');
 
-    yFit = polyval(p,xFit);
+    plot(xfit,yfit,...
+        'k-',...
+        'LineWidth',1.5);
 
-    plot(xFit,...
-        yFit,...
-        '--',...
-        'Color',[0 0.4470 0.7410],...
-        'LineWidth',2);
-
-    xlabel('Exposure (mAs)')
-    ylabel('Mean pixel value, $\mu$','Interpreter','latex')
-
-    title('Detector response linearity')
+    xlabel('Tube current-time product (mAs)')
+    ylabel('Mean pixel value')
 
     set(gca,...
         'FontSize',12,...
         'LineWidth',1.2)
 
 end
+
 end

@@ -79,54 +79,81 @@ for k = 1:nImg
     sigma2_var(k)  = var(roi_var(:));
 end
 
-% Second-order polynomial fit: Var_ROI versus (E_ROI - tau)
-P2 = polyfit(mu_l,sigma2_var,2);
+%% Prepare data
 
-% Structural noise standard deviation
-xi_s = sqrt(P2(1));
+mu_l = mu_l(:);
+sigma2_var = sigma2_var(:);
 
-% Quantum noise variance
-xi_q = (P2(2));
+%% Quadratic regression
 
-% Electronic noise standard deviation
-xi_e = sqrt(P2(3));
+mdl = fitlm(mu_l,sigma2_var,...
+    'poly2');
 
-%% Plot figures
+%% Regression coefficients
 
-if showFigure
+% fitlm stores:
+%
+%   coefficient 1 -> intercept
+%   coefficient 2 -> linear term
+%   coefficient 3 -> quadratic term
 
-    figure('Color','w',...
-           'Units','centimeters',...
-           'Position',[2 2 11 8]);
+a0 = mdl.Coefficients.Estimate(1);
+a1 = mdl.Coefficients.Estimate(2);
+a2 = mdl.Coefficients.Estimate(3);
 
-    hold on
-    box on
-    grid on
+%% Noise parameters
 
-    scatter(mu_l,...
-            sigma2_var,...
-            70,...
-            'filled',...
-            'MarkerFaceColor',[0 0.4470 0.7410],...
-            'MarkerEdgeColor','k');
+xi_e = sqrt(a0);
+xi_q = a1;
+xi_s = sqrt(a2);
 
-    xFit = linspace(min(mu_l),max(mu_l),300);
+%% Goodness of fit
 
-    yFit = polyval(P2,xFit);
+R2 = mdl.Rsquared.Ordinary;
 
-    plot(xFit,...
-         yFit,...
-         '--',...
-         'LineWidth',2,...
-         'Color',[0 0.4470 0.7410]);
+%% 95% confidence intervals
 
-    xlabel('Linearized mean pixel value, \mu_l')
-    ylabel('Sample variance')
+CI_all = coefCI(mdl,0.05);
 
-    set(gca,...
-        'FontSize',11,...
-        'LineWidth',1.2)
+% Intercept
+CI.a0 = CI_all(1,:);
 
-end
+% Linear coefficient
+CI.a1 = CI_all(2,:);
+
+% Quadratic coefficient
+CI.a2 = CI_all(3,:);
+
+%% Confidence intervals for noise parameters
+
+% Since xi_e = sqrt(a0) and xi_s = sqrt(a2),
+% transform the confidence limits accordingly.
+
+CI.xi_e = sqrt(CI.a0);
+CI.xi_q = CI.a1;
+CI.xi_s = sqrt(CI.a2);
+
+%% Display
+
+fprintf('\n');
+fprintf('=============================================\n');
+fprintf('Quadratic Noise Model\n');
+fprintf('=============================================\n');
+
+fprintf('xi_s = %.6f\n',xi_s);
+fprintf('95%% CI = [%.6f, %.6f]\n',...
+    CI.xi_s(1),CI.xi_s(2));
+
+fprintf('xi_q = %.6f\n',xi_q);
+fprintf('95%% CI = [%.6f, %.6f]\n',...
+    CI.xi_q(1),CI.xi_q(2));
+
+fprintf('xi_e = %.6f\n',xi_e);
+fprintf('95%% CI = [%.6f, %.6f]\n',...
+    CI.xi_e(1),CI.xi_e(2));
+
+fprintf('R^2 = %.5f\n',R2);
+
+fprintf('\n');
 
 end
