@@ -55,8 +55,8 @@ The workflow consists of the following steps:
 
 The current repository contains calibration datasets from two commercial digital mammography systems:
 
-- Siemens Mammomat Fusion (direct-conversion a-Se detector)
-- GE Senographe Pristina (indirect-conversion a-Si/CsI detector)
+- Siemens Mammomat Fusion (indirect-conversion detector)
+- GE Senographe Pristina (indirect-conversion detector)
 
 To select the desired system, edit the corresponding section of **main_est.m**.
 
